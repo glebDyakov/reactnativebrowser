@@ -23,7 +23,7 @@ import { WebView } from 'react-native-webview';
 export default function App() {
   const Stack = createStackNavigator();
 
-  const testActivity = "BookmarksActivity"
+  const testActivity = "DownloadsActivity"
 
   return (
     <NavigationContainer>
@@ -55,8 +55,78 @@ export function SettingsActivity({  }){
 }
 
 export function DownloadsActivity({  }){
+  
+  const [ downloads, setDownloads ] = React.useState([
+    {
+      url: "https://google.com",
+      title: "Google",
+      size: 2054
+    },
+    {
+      url: "https://yandex.ru",
+      title: "Yandex",
+      size: 1024
+    },
+  ])
+
   return (
-    <View>downloads</View>
+    <View style={{ width: '100%' }}>
+      <View style={{ width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+        <View style={{ display: 'flex', flexDirection: 'row', width: 175, justifyContent: 'space-around' }}>
+          <TouchableOpacity onPress={() => {
+            console.log("назад")
+            navigation.navigate("MainActivity")
+          }}>
+            <AntDesign name="left" size={24} color="black" />
+          </TouchableOpacity>
+          <Text style={{ fontSize: 18 }}>
+            Загрузки
+          </Text>
+        </View>
+        <View style={{ display: 'flex', flexDirection: 'row', width: 125, alignItems: 'center', justifyContent: 'space-around' }}>
+          <TouchableOpacity onPress={() => {
+            console.log("Поделиться")
+          }}>
+            <Ionicons name="ios-share-social-outline" size={24} color="black" />
+          </TouchableOpacity>
+          
+          <TouchableOpacity style={{  }} onPress={() => {
+            console.log(`искать`)
+          }}>
+            <EvilIcons name="search" size={ 32 } color="black" />
+          </TouchableOpacity>
+          
+          <TouchableOpacity onPress={() => {
+            console.log("открываю дополнительное окно")
+          }}>
+            <Text>⋮</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      <View style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        {
+          downloads.length >= 1 ?
+            downloads.map(download => {
+              return (
+                <View style={{ height: 75, marginVertical: 15, backgroundColor: "rgb(255, 255, 255)", width: '85%', borderRadius: 15 }}>
+                  <View style={{ width: "100%", height: "100%", display: 'flex', flexDirection: 'row', justifyContent: "space-around", alignItems: 'center' }}>
+                    <AntDesign name="left" size={24} color="black" />
+                    <View>
+                      <Text>{ download.title }</Text>
+                      <Text>{ download.url }</Text>
+                    </View>
+                    <Text>{ download.size } КБ</Text>
+                  </View>
+                </View>
+              )
+            })
+          :
+            <Text>Нет загрузок.</Text>
+        }
+
+      </View>
+    </View>
   )  
 }
 
