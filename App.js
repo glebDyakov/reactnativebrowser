@@ -11,7 +11,8 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { EvilIcons } from '@expo/vector-icons'; 
 import { Octicons } from '@expo/vector-icons'; 
 import { MaterialIcons } from '@expo/vector-icons'; 
-import { Entypo } from '@expo/vector-icons'; 
+import { Entypo } from '@expo/vector-icons';
+import { Fontisto } from '@expo/vector-icons'; 
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -22,9 +23,11 @@ import { WebView } from 'react-native-webview';
 export default function App() {
   const Stack = createStackNavigator();
 
+  const testActivity = "BookmarksActivity"
+
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator initialRouteName={ testActivity }>
         <Stack.Screen name="MainActivity" component={ MainActivity } />
         <Stack.Screen name="SettingsActivity" component={ SettingsActivity } />
         <Stack.Screen name="BookmarksActivity" component={ BookmarksActivity } />
@@ -39,8 +42,14 @@ export default function App() {
 
 export function SettingsActivity({  }){
   return (
-    <View>
-      <Text>settings</Text>
+    <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+      <View style={{ marginVertical: 15, width: "85%", height: 75, display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: "rgb(255, 255, 255)", borderRadius: 15 }}>
+        <TouchableOpacity onPress={() => {
+          console.log("выбор поисковой системы")
+        }}>
+          <Text>Поисковая система</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   )  
 }
@@ -52,25 +61,356 @@ export function DownloadsActivity({  }){
 }
 
 export function BookmarksActivity({  }){
+  
+  const [ bookmarks, setBookmarks ] = React.useState([
+    {
+      title: 'Yandex',
+      url: 'https://yandex.ru'
+    },
+    {
+      title: 'Google',
+      url: 'https://google.com'
+    },
+  ])
+  
   return (
     <View>
-      <Text>bookmarks</Text>
+
+      <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+        <View style={{ display: 'flex', flexDirection: 'row', width: 175, justifyContent: 'space-around' }}>
+          <TouchableOpacity onPress={() => {
+            console.log("назад")
+            navigation.navigate("MainActivity")
+          }}>
+            <AntDesign name="left" size={24} color="black" />
+          </TouchableOpacity>
+          <Text style={{ fontSize: 18 }}>
+            Закладки
+          </Text>
+        </View>
+        <View style={{ display: 'flex', flexDirection: 'row', width: 125, alignItems: 'center', justifyContent: 'space-around' }}>
+          
+          <TouchableOpacity onPress={() => {
+            console.log("Поделиться")
+          }}>
+            <Ionicons name="ios-share-social-outline" size={24} color="black" />
+          </TouchableOpacity>
+          
+          <TouchableOpacity style={{  }} onPress={() => {
+            console.log(`искать`)
+          }}>
+            <EvilIcons name="search" size={ 32 } color="black" />
+          </TouchableOpacity>
+          
+          <TouchableOpacity onPress={() => {
+            console.log("открываю дополнительное окно")
+            setContextMenuEnabled(true)
+          }}>
+            <Text>⋮</Text>
+          </TouchableOpacity>
+        
+        </View>
+      </View>
+
+      <View style={{ backgroundColor: 'rgb(255, 255, 255)', width: "100%", borderRadius: 15, marginVertical: 15, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: "90%" }}>
+        
+        {
+          bookmarks.length >= 1 ?
+            bookmarks.map(bookmark => {
+              return (
+                <View style={{ marginVertical: 15, display: 'flex', flexDirection: 'row', alignItems: 'space-around', justifyContent: 'space-around', width: "100%" }}>
+                  <Fontisto name="yandex" size={24} color="black" />
+                  <View style={{ width: '75%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: 45 }}>
+                    <Text>{ bookmark.title }</Text>
+                    <View style={{ borderBottomColor: 'rgb(0, 0, 0)', borderBottomWidth: StyleSheet.hairlineWidth, }}>
+                    </View>
+                  </View>
+                </View>
+              )
+            })
+          :
+          <Text style={{ marginVertical: 35 }}>Закладок нет</Text>
+        }
+        
+      </View>
     </View>
   )  
 }
 
 export function HistoryActivity({  }){
+
+  const [ historyRecords, setHistoryRecords ] = React.useState([
+    {
+      today: true,
+      yesterday: true,
+      lastWeek: false,
+      lastMonth: true,
+      title: "Yandex",
+      url: 'https://yandex.ru',
+      
+    },
+    {
+      today: true,
+      yesterday: true,
+      lastWeek: true,
+      lastMonth: false,
+      title: "Google",
+      url: 'https://google.com'
+    },
+    {
+      today: false,
+      yesterday: true,
+      lastWeek: true,
+      lastMonth: true,
+      title: "Microsoft",
+      url: 'https://microsoft.com'
+    },
+  ])
+
+  const [ todayHistoryList, setTodayHistoryList ] = React.useState(false)
+  const [ yestedayHistoryList, setYestedayHistoryList ] = React.useState(false)
+  const [ lastWeekHistoryList, setLastWeekHistoryList ] = React.useState(false)
+  const [ lastMonthHistoryList, setLastMonthHistoryList ] = React.useState(false)
+
   return (
     <View>
-      <Text>history</Text>
+      <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+        <View style={{ display: 'flex', flexDirection: 'row', width: 175, justifyContent: 'space-around' }}>
+          <TouchableOpacity onPress={() => {
+            console.log("назад")
+            navigation.navigate("MainActivity")
+          }}>
+            <AntDesign name="left" size={24} color="black" />
+          </TouchableOpacity>
+          <Text style={{ fontSize: 18 }}>
+            Журнал
+          </Text>
+        </View>
+        <View style={{ display: 'flex', flexDirection: 'row', width: 125, alignItems: 'center', justifyContent: 'space-around' }}>
+          
+          <TouchableOpacity onPress={() => {
+            console.log("Поделиться")
+          }}>
+            <Ionicons name="ios-share-social-outline" size={24} color="black" />
+          </TouchableOpacity>
+          
+          <TouchableOpacity style={{  }} onPress={() => {
+            console.log(`искать`)
+          }}>
+            <EvilIcons name="search" size={ 32 } color="black" />
+          </TouchableOpacity>
+          
+          <TouchableOpacity onPress={() => {
+            console.log("открываю дополнительное окно")
+            setContextMenuEnabled(true)
+          }}>
+            <Text>⋮</Text>
+          </TouchableOpacity>
+        
+        </View>
+      </View>
+
+      <View>
+        
+        <View style={{  }}>
+          <TouchableOpacity style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }} onPress={() => {
+            console.log("раскрываю/сворачиваю список")
+            setTodayHistoryList(!todayHistoryList)
+          }}>
+            <Text style={{ marginLeft: 35, fontWeight: 700 }}>Сегодня</Text>
+            {
+              todayHistoryList ?
+                <AntDesign name="up" size={24} color="black" />
+              :
+                <AntDesign name="down" size={24} color="black" />
+            }
+          </TouchableOpacity>
+          <View style={{ width: '100%' }}>
+            {
+              todayHistoryList ?
+                historyRecords.map(historyRecord => {
+                  if(historyRecord.today) {
+                    return (
+                      <View style={{ display: 'flex', width: '100%' }}>
+                        <Text>
+                          { historyRecord.title }
+                        </Text>
+                        <Text>
+                          { historyRecord.url }
+                        </Text>
+                      </View>
+                    )
+                  }
+                  return <Text></Text>
+                })
+              :
+                <Text></Text>
+            }
+          </View>
+        </View>
+
+        <View style={{  }}>
+          <TouchableOpacity style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }} onPress={() => {
+            console.log("раскрываю/сворачиваю список")
+            setYestedayHistoryList(!yestedayHistoryList)
+          }}>
+            <Text style={{ marginLeft: 35, fontWeight: 700 }}>Вчера</Text>
+            {
+              yestedayHistoryList ?
+                <AntDesign name="up" size={24} color="black" />
+              :
+                <AntDesign name="down" size={24} color="black" />
+            }
+          </TouchableOpacity>
+          <View style={{ width: '100%' }}>
+            {
+              yestedayHistoryList ?
+                historyRecords.map(historyRecord => {
+                  if(historyRecord.yesterday) {
+                    return (
+                      <View style={{ display: 'flex', width: '100%' }}>
+                        <Text>
+                          { historyRecord.title }
+                        </Text>
+                        <Text>
+                          { historyRecord.url }
+                        </Text>
+                      </View>
+                    )
+                  }
+                  return <Text></Text>
+                })
+              :
+                <Text></Text>
+            }
+          </View>
+        </View>
+
+        <View style={{  }}>
+          <TouchableOpacity style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }} onPress={() => {
+            console.log("раскрываю/сворачиваю список")
+            setLastWeekHistoryList(!lastWeekHistoryList)
+          }}>
+            <Text style={{ marginLeft: 35, fontWeight: 700 }}>За последние 7 дней</Text>
+            {
+              lastWeekHistoryList ?
+                <AntDesign name="up" size={24} color="black" />
+              :
+                <AntDesign name="down" size={24} color="black" />
+            }
+          </TouchableOpacity>
+          <View style={{ width: '100%' }}>
+            {
+              lastWeekHistoryList ?
+                historyRecords.map(historyRecord => {
+                  if(historyRecord.lastWeek) {
+                    return (
+                      <View style={{ display: 'flex', width: '100%' }}>
+                        <Text>
+                          { historyRecord.title }
+                        </Text>
+                        <Text>
+                          { historyRecord.url }
+                        </Text>
+                      </View>
+                    )
+                  }
+                  return <Text></Text>
+                })
+              :
+                <Text></Text>
+            }
+          </View>
+        </View>
+
+        <View style={{  }}>
+          <TouchableOpacity style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }} onPress={() => {
+            console.log("раскрываю/сворачиваю список")
+            setLastMonthHistoryList(!lastMonthHistoryList)
+          }}>
+            <Text style={{ marginLeft: 35, fontWeight: 700 }}>За последний месяц</Text>
+            {
+              lastMonthHistoryList ?
+                <AntDesign name="up" size={24} color="black" />
+              :
+                <AntDesign name="down" size={24} color="black" />
+            }
+          </TouchableOpacity>
+          <View style={{ width: '100%' }}>
+            {
+              lastMonthHistoryList ?
+                historyRecords.map(historyRecord => {
+                  if(historyRecord.lastMonth) {
+                    return (
+                      <View style={{ display: 'flex', width: '100%' }}>
+                        <Text>
+                          { historyRecord.title }
+                        </Text>
+                        <Text>
+                          { historyRecord.url }
+                        </Text>
+                      </View>
+                    )
+                  }
+                  return <Text></Text>
+                })
+              :
+                <Text></Text>
+            }
+          </View>
+        </View>
+
+      </View>
+
     </View>
   )  
 }
 
 export function TabsActivity({  }){
+  
+  const [ tabs, setTabs ] = React.useState([
+    {
+      tabName: 'yandex'
+    }
+  ])
+  
   return (
-    <View>
-      <Text>tabs</Text>
+    <View style={{ display: 'block', width: "100%" }}>
+      {
+        tabs.length >= 1 ?
+          tabs.map(tab => {
+            return (
+              <TouchableOpacity style={{ float: 'left', width: 175, height: 175, backgroundColor: "rgb(250, 250, 250)", borderRadius: 15, margin: 15 }} onPress={() => {
+                console.log("Переходим к вкладке")
+              }}>
+                <View>
+                </View>
+              </TouchableOpacity>
+            )
+          })
+        :
+          <View style={{ width: '100%' }}>
+            <Text style={{ textAlign: 'center' }}>Вкладок нет</Text>
+          </View>
+      }
+      <View style={{ clear: 'both' }}></View>
+      
+      <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', position: "fixed", top: "calc(100% - 50px)", width: "100%", height: 50, backgroundColor: "rgb(75, 75, 75)" }}>
+        <TouchableOpacity onPress={() => {
+          console.log("Добавить вкладку")
+          // tabs.push({
+          //   name: "newtab"
+          // })
+          setTabs([
+              ...tabs, {
+              asd: "asd"
+            }
+          ])
+        }}>
+          <Text style={{ color: "rgb(255, 255, 255)", fontSize: 18, fontWeight: 700 }}>Добавить вкладку</Text>
+        </TouchableOpacity>
+      </View>
+    
     </View>
   )  
 }
